@@ -1,19 +1,24 @@
+require('dotenv').config();
 const express = require('express')
 var cors = require('cors');
-require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
-// middleware
-app.use(cors());
+
+app.use(
+  cors({
+      origin: ['http://localhost:5173', 'https://coffee-store-f8cfe.web.app'],
+      credentials: true,
+  }),
+)
 app.use(express.json());
 
 
 
 const uri = `mongodb+srv://${process.env.BD_USER}:${process.env.BD_PASS}@cluster0.kckbgvo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-console.log(uri);
+// console.log(uri);
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -28,7 +33,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const coffeeCollection = client.db("coffeeDB").collection('coffee');
     
@@ -49,7 +54,7 @@ async function run() {
 
     app.post('/coffee', async(req, res) => {
       const newCoffee = req.body;
-      console.log(newCoffee);
+      // console.log(newCoffee);
       const result = await coffeeCollection.insertOne(newCoffee);
       res.send(result)
     })
@@ -91,7 +96,7 @@ async function run() {
 
     app.post('/user', async(req, res) => {
       const user = req.body;
-      console.log(user);
+      // console.log(user);
       const result = await userCollection.insertOne(user);
       res.send(result)
     })
